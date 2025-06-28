@@ -99,9 +99,11 @@ document.addEventListener('DOMContentLoaded', () => {
     emailInput.value = '';
   });
 
-  retrieveForm.addEventListener('submit', async e => {
-    e.preventDefault();
-    codeError.textContent = '';
+retrieveForm.addEventListener('submit', async e => {
+  console.log('🕵️ retrieveForm listener fired');
+  e.preventDefault();
+  codeError.textContent = '';
+  // …
 
     const code = codeInput.value.trim();
     const resp = await fetch(`/api/retrieve?code=${encodeURIComponent(code)}`);
