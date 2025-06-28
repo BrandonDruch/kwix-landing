@@ -20,8 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const mailtoBtn = document.getElementById('mailtoBtn');
   
   let timerInterval;
-  let storedEmail = '';
-  let storedCode = '';
 
   const phoneticMap = {
     '1': 'One', '2': 'Two', '3': 'Three',
@@ -46,27 +44,47 @@ document.addEventListener('DOMContentLoaded', () => {
   sendTab.addEventListener('click', () => switchTab('send'));
   retrieveTab.addEventListener('click', () => switchTab('retrieve'));
 
-  sendForm.addEventListener('submit', e => {
+  sendForm.addEventListener('submit', async e => {
     e.preventDefault();
     emailError.textContent = '';
+
+    // Front-end HTML5 validation
     if (!emailInput.checkValidity()) {
       emailError.textContent = 'Please enter a valid email address.';
       return;
     }
-    storedEmail = emailInput.value.trim();
-    storedCode = Array.from({ length: 6 }, () => Math.floor(Math.random() * 9) + 1).join('');
-    codeDisplay.textContent = storedCode;
-    phoneticDisplay.textContent = storedCode.split('').map(n => phoneticMap[n]).join(', ');
+
+    const email = emailInput.value.trim().toLowerCase();
+    const resp = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await resp.json();
+
+    if (!resp.ok) {
+      emailError.textContent = data.error || 'Failed to generate code.';
+      return;
+    }
+
+    const code = data.code;
+    codeDisplay.textContent = code;
+    phoneticDisplay.textContent = code
+      .split('')
+      .map(n => phoneticMap[n] || n)
+      .join(', ');
     sendForm.classList.add('hidden');
     codeResult.classList.remove('hidden');
-    let timeLeft = 15 * 60;
-    timerDisplay.textContent = '15:00';
+
+    // Start 5-minute timer
+    let timeLeft = 300;
+    timerDisplay.textContent = '05:00';
     clearInterval(timerInterval);
     timerInterval = setInterval(() => {
       timeLeft--;
-      const minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-      const seconds = String(timeLeft % 60).padStart(2, '0');
-      timerDisplay.textContent = `${minutes}:${seconds}`;
+      const mm = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+      const ss = String(timeLeft % 60).padStart(2, '0');
+      timerDisplay.textContent = `${mm}:${ss}`;
       if (timeLeft <= 0) {
         clearInterval(timerInterval);
         alert('Code expired. Please restart.');
@@ -81,21 +99,24 @@ document.addEventListener('DOMContentLoaded', () => {
     emailInput.value = '';
   });
 
-  retrieveForm.addEventListener('submit', e => {
+  retrieveForm.addEventListener('submit', async e => {
     e.preventDefault();
     codeError.textContent = '';
-    if (codeInput.value.trim() !== storedCode) {
-      codeError.textContent = 'Invalid or expired code.';
+
+    const code = codeInput.value.trim();
+    const resp = await fetch(`/api/retrieve?code=${encodeURIComponent(code)}`);
+    const data = await resp.json();
+
+    if (!resp.ok) {
+      codeError.textContent = data.error || 'Failed to retrieve email.';
       return;
     }
-    emailDisplay.textContent = storedEmail;
+
+    emailDisplay.textContent = data.email;
     retrieveForm.classList.add('hidden');
     emailResult.classList.remove('hidden');
-    copyBtn.addEventListener('click', () => {
-      navigator.clipboard.writeText(storedEmail);
-    });
-    mailtoBtn.addEventListener('click', () => {
-      window.location.href = `mailto:${storedEmail}`;
-    });
+
+    copyBtn.onclick = () => navigator.clipboard.writeText(data.email);
+    mailtoBtn.onclick = () => (window.location.href = `mailto:${data.email}`);
   });
 });
