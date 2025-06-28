@@ -76,49 +76,5 @@ document.addEventListener('DOMContentLoaded', () => {
     sendForm.classList.add('hidden');
     codeResult.classList.remove('hidden');
 
-    // Start 5-minute timer
-    let timeLeft = 300;
-    timerDisplay.textContent = '05:00';
-    clearInterval(timerInterval);
-    timerInterval = setInterval(() => {
-      timeLeft--;
-      const mm = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-      const ss = String(timeLeft % 60).padStart(2, '0');
-      timerDisplay.textContent = `${mm}:${ss}`;
-      if (timeLeft <= 0) {
-        clearInterval(timerInterval);
-        alert('Code expired. Please restart.');
-      }
-    }, 1000);
-  });
-
-  restartBtn.addEventListener('click', () => {
-    clearInterval(timerInterval);
-    sendForm.classList.remove('hidden');
-    codeResult.classList.add('hidden');
-    emailInput.value = '';
-  });
-
-retrieveForm.addEventListener('submit', async e => {
-  console.log('🕵️ retrieveForm listener fired');
-  e.preventDefault();
-  codeError.textContent = '';
-  // …
-
-    const code = codeInput.value.trim();
-    const resp = await fetch(`/api/retrieve?code=${encodeURIComponent(code)}`);
-    const data = await resp.json();
-
-    if (!resp.ok) {
-      codeError.textContent = data.error || 'Failed to retrieve email.';
-      return;
-    }
-
-    emailDisplay.textContent = data.email;
-    retrieveForm.classList.add('hidden');
-    emailResult.classList.remove('hidden');
-
-    copyBtn.onclick = () => navigator.clipboard.writeText(data.email);
-    mailtoBtn.onclick = () => (window.location.href = `mailto:${data.email}`);
-  });
-});
+    // Track Generate Code event in Plausible
+    if (window.plausible) plausible('Gener
