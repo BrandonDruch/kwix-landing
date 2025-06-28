@@ -1,36 +1,28 @@
-import { NextResponse } from 'next/server'
+export default async function handler(req, res) {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
-export async function GET(request) {
-  const { searchParams } = new URL(request.url)
-  const code = searchParams.get('code')
-
-  // Validate that code is a 5-digit number (10000–99999)
+  const code = req.query.code;
   if (!code || !/^[1-9]\d{4}$/.test(code)) {
-    return NextResponse.json({ error: 'Invalid code format.' }, { status: 400 })
+    return res.status(400).json({ error: 'Invalid code format.' });
   }
 
-  // Fetch the stored email from Upstash Redis
-  const res = await fetch(
+  const upstashRes = await fetch(
     `${process.env.UPSTASH_REDIS_REST_URL}/get/${code}`,
-    {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
-      }
-    }
-  )
+    { method: 'GET', headers: { Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}` } }
+  );
 
-  if (!res.ok) {
-    return NextResponse.json({ error: 'Failed to retrieve code.' }, { status: 500 })
+  if (!upstashRes.ok) {
+    return res.status(500).json({ error: 'Failed to retrieve code.' });
   }
 
-  const data = await res.json()
-  const email = data.result ? decodeURIComponent(data.result) : null
+  const data = await upstashRes.json();
+  const email = data.result ? decodeURIComponent(data.result) : null;
 
   if (!email) {
-    return NextResponse.json({ error: 'Code expired or not found.' }, { status: 404 })
+    return res.status(404).json({ error: 'Code expired or not found.' });
   }
 
-  // Return the associated email address
-  return NextResponse.json({ email })
+  return res.status(200).json({ email });
 }
