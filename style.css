@@ -1,0 +1,26 @@
+/* Desktop-first layout */
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f9f9f9;
+  color: #333;
+}
+header { text-align: center; padding: 1rem; }
+.tabs { display: flex; justify-content: center; margin-bottom: 1rem; }
+.tabs button { margin: 0 0.5rem; padding: 0.5rem 1rem; cursor: pointer; }
+.tabs button.active { background: #0055cc; color: white; }
+main { max-width: 600px; margin: 0 auto; padding: 1rem; }
+form { display: flex; flex-direction: column; }
+label { margin-bottom: 0.5rem; }
+input { padding: 0.5rem; margin-bottom: 0.5rem; font-size: 1rem; }
+button { padding: 0.5rem; font-size: 1rem; background: #0055cc; color: white; border: none; cursor: pointer; }
+.error { color: #cc0000; font-size: 0.9rem; }
+.hidden { display: none; }
+.ad-placeholder { text-align: center; padding: 1rem; background: #e1e1e1; margin-top: 2rem; }
+/* Mobile adjustments */
+@media (max-width: 600px) {
+  .tabs { flex-direction: column; }
+  main { padding: 0.5rem; }
+  input, button { font-size: 1.2rem; }
+}
