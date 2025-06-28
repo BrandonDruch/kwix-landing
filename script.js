@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const emailDisplay = document.getElementById('emailDisplay');
   const copyBtn = document.getElementById('copyBtn');
   const mailtoBtn = document.getElementById('mailtoBtn');
-  
+
   let timerInterval;
 
   const phoneticMap = {
@@ -44,37 +44,93 @@ document.addEventListener('DOMContentLoaded', () => {
   sendTab.addEventListener('click', () => switchTab('send'));
   retrieveTab.addEventListener('click', () => switchTab('retrieve'));
 
-  sendForm.addEventListener('submit', async e => {
+  sendForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     emailError.textContent = '';
 
-    // Front-end HTML5 validation
+    // Front-end validation
     if (!emailInput.checkValidity()) {
       emailError.textContent = 'Please enter a valid email address.';
       return;
     }
 
     const email = emailInput.value.trim().toLowerCase();
-    const resp = await fetch('/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    });
-    const data = await resp.json();
+    try {
+      const resp = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await resp.json();
 
-    if (!resp.ok) {
-      emailError.textContent = data.error || 'Failed to generate code.';
-      return;
+      if (!resp.ok) {
+        throw new Error(data.error || 'Failed to generate code.');
+      }
+
+      const code = data.code;
+      codeDisplay.textContent = code;
+      phoneticDisplay.textContent = code
+        .split('')
+        .map((n) => phoneticMap[n] || n)
+        .join(', ');
+      sendForm.classList.add('hidden');
+      codeResult.classList.remove('hidden');
+
+      // Plausible event
+      if (window.plausible) plausible('Generate Code');
+
+      // Start timer
+      let timeLeft = 300;
+      timerDisplay.textContent = '05:00';
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        const mm = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+        const ss = String(timeLeft % 60).padStart(2, '0');
+        timerDisplay.textContent = `${mm}:${ss}`;
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          alert('Code expired. Please restart.');
+        }
+      }, 1000);
+
+    } catch (err) {
+      emailError.textContent = err.message;
     }
+  });
 
-    const code = data.code;
-    codeDisplay.textContent = code;
-    phoneticDisplay.textContent = code
-      .split('')
-      .map(n => phoneticMap[n] || n)
-      .join(', ');
-    sendForm.classList.add('hidden');
-    codeResult.classList.remove('hidden');
+  restartBtn.addEventListener('click', () => {
+    clearInterval(timerInterval);
+    sendForm.classList.remove('hidden');
+    codeResult.classList.add('hidden');
+    emailInput.value = '';
+  });
 
-    // Track Generate Code event in Plausible
-    if (window.plausible) plausible('Gener
+  retrieveForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    codeError.textContent = '';
+
+    const code = codeInput.value.trim();
+    try {
+      const resp = await fetch(`/api/retrieve?code=${encodeURIComponent(code)}`);
+      const data = await resp.json();
+
+      if (!resp.ok) {
+        throw new Error(data.error || 'Failed to retrieve email.');
+      }
+
+      emailDisplay.textContent = data.email;
+      retrieveForm.classList.add('hidden');
+      emailResult.classList.remove('hidden');
+
+      // Plausible event
+      if (window.plausible) plausible('Retrieve Email');
+
+      copyBtn.onclick = () => navigator.clipboard.writeText(data.email);
+      mailtoBtn.onclick = () => (window.location.href = `mailto:${data.email}`);
+
+    } catch (err) {
+      codeError.textContent = err.message;
+    }
+  });
+});
