@@ -1,16 +1,25 @@
-export default async function handler(req, res) {
+const { URL } = require('url');
+
+module.exports = async (req, res) => {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const code = req.query.code;
+  // Pull ?code= from the URL
+  const { code } = new URL(req.url, `http://${req.headers.host}`).searchParams;
   if (!code || !/^[1-9]\d{4}$/.test(code)) {
     return res.status(400).json({ error: 'Invalid code format.' });
   }
 
+  // Fetch from Upstash
   const upstashRes = await fetch(
     `${process.env.UPSTASH_REDIS_REST_URL}/get/${code}`,
-    { method: 'GET', headers: { Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}` } }
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`,
+      },
+    }
   );
 
   if (!upstashRes.ok) {
@@ -25,4 +34,4 @@ export default async function handler(req, res) {
   }
 
   return res.status(200).json({ email });
-}
+};
