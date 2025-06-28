@@ -31,18 +31,20 @@
       </div>
     </section>
     <section id="retrieveSection" class="hidden">
-      <form id="retrieveForm">
-        <label for="codeInput">Enter code:</label>
-        <input type="text" id="codeInput" pattern="[1-9]{6}" required>
-        <div id="codeError" class="error"></div>
-        <button type="submit">Retrieve Email</button>
-      </form>
-      <div id="emailResult" class="hidden">
-        <p>Email: <span id="emailDisplay"></span></p>
-        <button id="copyBtn">Copy</button>
-        <button id="mailtoBtn">Send Email</button>
-      </div>
-    </section>
+    <form id="retrieveForm">
+    <label for="codeInput">Enter 5-digit code:</label>
+    <input 
+      type="text" 
+      id="codeInput" 
+      pattern="[1-9][0-9]{4}" 
+      title="Must be a 5-digit code" 
+      required
+    >
+    <div id="codeError" class="error"></div>
+    <button type="submit">Retrieve Email</button>
+  </form>
+  <!-- … -->
+</section>
   </main>
   <footer>
     <p>Terms | Privacy</p>
