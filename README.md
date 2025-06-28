@@ -13,3 +13,5 @@ This is a starter prototype for **kwyx.email**, a service to generate short nume
 2. Import into Vercel and deploy (Framework: Other, Root: /).
 3. Configure your domain (kwyx.email) with DNS settings as described.
 
+
+
