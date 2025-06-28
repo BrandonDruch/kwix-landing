@@ -3,53 +3,74 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Kwyx.email</title>
+  <title>kwyx.email</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>Kwyx.email</h1>
+    <h1>kwyx.email</h1>
     <p>Easily share your email over the phone</p>
   </header>
+
   <main>
     <div class="tabs">
       <button id="sendTab" class="active">Send Email</button>
       <button id="retrieveTab">Retrieve Email</button>
     </div>
+
+    <!-- SEND FLOW -->
     <section id="sendSection">
       <form id="sendForm">
-        <label for="emailInput">Enter your email:</label>
-        <input type="email" id="emailInput" required>
+        <label for="emailInput">Enter your email address:</label>
+        <input
+          type="email"
+          id="emailInput"
+          required
+          placeholder="you@example.com"
+        >
         <div id="emailError" class="error"></div>
         <button type="submit">Generate Code</button>
       </form>
+
       <div id="codeResult" class="hidden">
         <p>Your code: <span id="codeDisplay"></span></p>
-        <p>Phonetic: <span id="phoneticDisplay"></span></p>
-        <p>Expires in: <span id="timerDisplay">15:00</span></p>
-        <button id="restartBtn">Restart</button>
+        <p>Say: <span id="phoneticDisplay"></span></p>
+        <p>Expires in: <span id="timerDisplay">05:00</span></p>
+        <button id="restartBtn">Start Over</button>
       </div>
     </section>
+
+    <!-- RETRIEVE FLOW -->
     <section id="retrieveSection" class="hidden">
-    <form id="retrieveForm">
-    <label for="codeInput">Enter 5-digit code:</label>
-    <input 
-      type="text" 
-      id="codeInput" 
-      pattern="[1-9][0-9]{4}" 
-      title="Must be a 5-digit code" 
-      required
-    >
-    <div id="codeError" class="error"></div>
-    <button type="submit">Retrieve Email</button>
-  </form>
-  <!-- … -->
-</section>
+      <form id="retrieveForm">
+        <label for="codeInput">Enter 5-digit code:</label>
+        <input
+          type="text"
+          id="codeInput"
+          pattern="[1-9][0-9]{4}"
+          title="Must be a 5-digit code"
+          placeholder="12345"
+          required
+        >
+        <div id="codeError" class="error"></div>
+        <button type="submit">Retrieve Email</button>
+      </form>
+
+      <div id="emailResult" class="hidden">
+        <p>Email: <span id="emailDisplay"></span></p>
+        <button id="copyBtn">Copy</button>
+        <button id="mailtoBtn">Send Email</button>
+      </div>
+    </section>
   </main>
+
   <footer>
-    <p>Terms | Privacy</p>
+    <p><a href="/terms">Terms</a> | <a href="/privacy">Privacy</a></p>
   </footer>
+
+  <!-- reserved ad space -->
   <div class="ad-placeholder">Ad space</div>
+
   <script src="script.js"></script>
 </body>
-</html>
+</
