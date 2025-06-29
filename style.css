@@ -156,4 +156,29 @@ button:hover {
     max-height: 50px;
   }
 }
+/* Flex‐row for the two buttons */
+.button-row {
+  display: flex;
+  align-items: center;
+}
+
+/* Reserve space for Copy + “Copied!” */
+.copy-container {
+  display: inline-flex;
+  align-items: center;
+  /* adjust this to fit your longest Copy+message width */
+  min-width: 10ch;
+}
+
+/* “Copied!” stays inline, we already set .message to inline-block */
+.message {
+  display: inline-block;
+  margin-left: 0.5rem;
+  color: var(--color-accent);
+}
+
+/* Space between Copy-container and Send Email */
+.button-row > #mailtoBtn {
+  margin-left: 1.5rem;
+}
 
