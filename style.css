@@ -37,6 +37,13 @@ button { padding: 0.5rem; font-size: 1rem; background: #0055cc; color: white; bo
 }
 
 .logo {
-  height: 60px;
+  height: auto;
   max-width: 100%;
+  max-height: 60px;
+  padding: 10px 0;
+}
+@media (max-width: 480px) {
+  .logo {
+    max-height: 50px;
+  }
 }
