@@ -34,12 +34,14 @@
         <button type="submit">Generate Code</button>
       </form>
 
-      <div id="codeResult" class="hidden">
-        <p>Your code: <span id="codeDisplay"></span></p>
-        <p>Say: <span id="phoneticDisplay"></span></p>
-        <p>Expires in: <span id="timerDisplay">05:00</span></p>
-        <button id="restartBtn">Start Over</button>
+      <div id="emailResult" class="hidden">
+        <p>Email: <span id="emailDisplay"></span></p>
+        <button id="copyBtn">Copy</button>
+        <!-- New confirmation message, hidden by default -->
+        <span id="copyMessage" class="message hidden">Copied!</span>
+        <button id="mailtoBtn">Send Email</button>
       </div>
+
     </section>
 
     <!-- RETRIEVE FLOW -->
