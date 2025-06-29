@@ -24,3 +24,10 @@ button { padding: 0.5rem; font-size: 1rem; background: #0055cc; color: white; bo
   main { padding: 0.5rem; }
   input, button { font-size: 1.2rem; }
 }
+.message {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #0055cc;
+}
+.hidden { display: none; }
