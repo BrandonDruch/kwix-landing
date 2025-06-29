@@ -62,7 +62,8 @@ document.addEventListener('DOMContentLoaded', () => {
     codeDisplay.textContent=data.code;
     phoneticDisplay.textContent=data.code.split('').map(n=>phoneticMap[n]||n).join(', ');
     sendForm.classList.add('hidden');
-    codeResult.classList.remove('hidden');
+    codeResult.classList.remove('hidden'); 
+    if (window.plausible) plausible('Generate Code');
     let timeLeft=300;
     timerDisplay.textContent='05:00';
     clearInterval(timerInterval);
@@ -97,6 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
     emailDisplay.textContent=data.email;
     retrieveForm.classList.add('hidden');
     emailResult.classList.remove('hidden');
+    if (window.plausible) plausible('Retrieve Email');
     copyBtn.onclick=()=>navigator.clipboard.writeText(data.email);
     mailtoBtn.onclick=()=>window.location.href=`mailto:${data.email}`;
   });
