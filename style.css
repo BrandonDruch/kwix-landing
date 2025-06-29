@@ -181,3 +181,17 @@ button:hover {
 .button-row > #mailtoBtn {
   margin-left: 1.5rem;
 }
+/* ——————————————————————————————— */
+/* Force code-result & retrieve sections to stay hidden until un-hidden by JS */
+/* ——————————————————————————————— */
+
+#codeResult,
+#retrieveSection {
+  display: none !important;
+}
+
+#codeResult:not(.hidden),
+#retrieveSection:not(.hidden) {
+  display: block !important;
+}
+
