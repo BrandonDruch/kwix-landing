@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>kwyx.email</title>
-  <!-- Plausible Analytics: placed in <head> for proper verification -->
+  <!-- Plausible Analytics -->
   <script defer data-domain="kwyx.email" src="https://plausible.io/js/script.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -24,38 +24,24 @@
     <section id="sendSection">
       <form id="sendForm">
         <label for="emailInput">Enter your email address:</label>
-        <input
-          type="email"
-          id="emailInput"
-          required
-          placeholder="you@example.com"
-        >
+        <input type="email" id="emailInput" placeholder="you@example.com" required>
         <div id="emailError" class="error"></div>
         <button type="submit">Generate Code</button>
       </form>
 
-      <div id="emailResult" class="hidden">
-        <p>Email: <span id="emailDisplay"></span></p>
-        <button id="copyBtn">Copy</button>
-        <!-- New confirmation message, hidden by default -->
-        <span id="copyMessage" class="message hidden">Copied!</span>
-        <button id="mailtoBtn">Send Email</button>
+      <div id="codeResult" class="hidden">
+        <p>Your code: <span id="codeDisplay"></span></p>
+        <p>Say: <span id="phoneticDisplay"></span></p>
+        <p>Expires in: <span id="timerDisplay">05:00</span></p>
+        <button id="restartBtn">Start Over</button>
       </div>
-
     </section>
 
     <!-- RETRIEVE FLOW -->
     <section id="retrieveSection" class="hidden">
       <form id="retrieveForm">
         <label for="codeInput">Enter 5-digit code:</label>
-        <input
-          type="text"
-          id="codeInput"
-          pattern="[1-9][0-9]{4}"
-          title="Must be a 5-digit code"
-          placeholder="12345"
-          required
-        >
+        <input type="text" id="codeInput" pattern="[1-9][0-9]{4}" placeholder="12345" required>
         <div id="codeError" class="error"></div>
         <button type="submit">Retrieve Email</button>
       </form>
@@ -63,6 +49,7 @@
       <div id="emailResult" class="hidden">
         <p>Email: <span id="emailDisplay"></span></p>
         <button id="copyBtn">Copy</button>
+        <span id="copyMessage" class="message hidden">Copied!</span>
         <button id="mailtoBtn">Send Email</button>
       </div>
     </section>
@@ -72,10 +59,7 @@
     <p><a href="/terms">Terms</a> | <a href="/privacy">Privacy</a></p>
   </footer>
 
-  <!-- reserved ad space -->
   <div class="ad-placeholder">Ad space</div>
-
-  <!-- Your app logic -->
   <script src="script.js"></script>
 </body>
 </html>
