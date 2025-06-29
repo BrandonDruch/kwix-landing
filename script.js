@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Grab all the elements by their exact IDs
   const sendTab        = document.getElementById('sendTab');
   const retrieveTab    = document.getElementById('retrieveTab');
   const sendSection    = document.getElementById('sendSection');
@@ -21,14 +20,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const copyMessage    = document.getElementById('copyMessage');
   const mailtoBtn      = document.getElementById('mailtoBtn');
 
-  // Quick sanity check
+  // Sanity check
   if (!sendTab || !retrieveTab || !sendForm || !retrieveForm) {
-    console.error('One of the key elements is missing! Check your index.html IDs.');
+    console.error('Missing one of the main elements—check your index.html IDs.');
     return;
   }
 
   let timerInterval;
-  const phoneticMap = { '1':'One','2':'Two','3':'Three','4':'Four','5':'Five','6':'Six','7':'Seven','8':'Eight','9':'Nine' };
+
+  // Updated phonetic map to include zero
+  const phoneticMap = {
+    '0':'Zero','1':'One','2':'Two','3':'Three',
+    '4':'Four','5':'Five','6':'Six',
+    '7':'Seven','8':'Eight','9':'Nine'
+  };
 
   // Tab switching
   function switchTab(tab) {
@@ -52,18 +57,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     try {
       const resp = await fetch('/api/generate', {
-        method:'POST', headers:{'Content-Type':'application/json'},
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
         body: JSON.stringify({ email: emailInput.value.trim().toLowerCase() })
       });
       const data = await resp.json();
       if (!resp.ok) throw new Error(data.error || 'Generate failed');
 
       codeDisplay.textContent = data.code;
-      phoneticDisplay.textContent = data.code.split('').map(n => phoneticMap[n]||n).join(', ');
+      phoneticDisplay.textContent = data.code
+        .split('').map(n => phoneticMap[n]||n).join(', ');
       sendForm.classList.add('hidden'); codeResult.classList.remove('hidden');
       if (window.plausible) plausible('Generate Code');
 
-      // timer
+      // Timer
       let timeLeft = 300;
       timerDisplay.textContent = '05:00';
       clearInterval(timerInterval);
