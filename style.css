@@ -123,11 +123,16 @@ button:hover {
   margin-top: 0.25rem;
   font-size: 0.9rem;
 }
+/* default message style */
 .message {
-  display: inline-block;      /* sit inline */
-  margin-left: 0.5rem;        /* space from the button */
+  display: inline-block;
+  margin-left: 0.5rem;
   font-size: 0.9rem;
   color: var(--color-accent);
+}
+/* ensure hidden always hides the message */
+.message.hidden {
+  display: none !important;
 }
 
 /* 10. Ad placeholder */
@@ -139,9 +144,22 @@ button:hover {
   border-radius: 4px;
 }
 
-/* 11. Utility classes */
-.hidden {
-  display: none;
+/* 11. Flex‐row for the two buttons */
+.button-row {
+  display: flex;
+  align-items: center;
+}
+
+/* Reserve space for Copy + “Copied!” */
+.copy-container {
+  display: inline-flex;
+  align-items: center;
+  min-width: 10ch;   /* reserve enough width */
+}
+
+/* Space between Copy-container and Send Email */
+.button-row > #mailtoBtn {
+  margin-left: 1.5rem;
 }
 
 /* 12. Logo resizing */
@@ -156,29 +174,10 @@ button:hover {
     max-height: 50px;
   }
 }
-/* Flex‐row for the two buttons */
-.button-row {
-  display: flex;
-  align-items: center;
-}
 
-/* Reserve space for Copy + “Copied!” */
-.copy-container {
-  display: inline-flex;
-  align-items: center;
-  /* adjust this to fit your longest Copy+message width */
-  min-width: 10ch;
+/* 13. Responsive adjustments */
+@media (max-width: 600px) {
+  .tabs { flex-direction: column; }
+  main { padding: 0.5rem; }
+  input, button { font-size: 1.2rem; }
 }
-
-/* “Copied!” stays inline, we already set .message to inline-block */
-.message {
-  display: inline-block;
-  margin-left: 0.5rem;
-  color: var(--color-accent);
-}
-
-/* Space between Copy-container and Send Email */
-.button-row > #mailtoBtn {
-  margin-left: 1.5rem;
-}
-
