@@ -124,8 +124,8 @@ button:hover {
   font-size: 0.9rem;
 }
 .message {
-  display: block;
-  margin-top: 0.5rem;
+  display: inline-block;      /* sit inline */
+  margin-left: 0.5rem;        /* space from the button */
   font-size: 0.9rem;
   color: var(--color-accent);
 }
