@@ -100,8 +100,12 @@ document.addEventListener('DOMContentLoaded', () => {
     emailResult.classList.remove('hidden');
     if (window.plausible) plausible('Retrieve Email');
     copyBtn.onclick = () => {
-      navigator.clipboard.writeText(data.email);
+  navigator.clipboard.writeText(data.email).then(() => {
+      const msg = document.getElementById('copyMessage');
+      msg.classList.remove('hidden');
       if (window.plausible) plausible('Copy Email');
+      setTimeout(() => msg.classList.add('hidden'), 2000);
+  });
       };
     mailtoBtn.onclick = () => {
       window.location.href = `mailto:${data.email}`;
