@@ -33,8 +33,7 @@ button { padding: 0.5rem; font-size: 1rem; background: #0055cc; color: white; bo
 .hidden { display: none; }
 .site-header {
   text-align: center;
-  padding: 20px;
-  background-color: white; 
+  padding: 20px; 
 }
 
 .logo {
