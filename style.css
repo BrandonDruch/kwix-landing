@@ -1,41 +1,150 @@
-/* Desktop-first layout */
-body {
-  font-family: sans-serif;
+/* 1. Brand color variables */
+:root {
+  --color-primary:   #003A63;   /* Midnight Blue */
+  --color-secondary: #2E2E2E;   /* Soft Charcoal */
+  --color-accent:    #FFC857;   /* Warm Amber */
+  --color-bg:        #FFFFFF;   /* Pure White */
+  --color-muted:     #A8BBC6;   /* Cool Slate */
+  --color-alt-bg:    #F9F9F9;   /* Page background */
+}
+
+/* 2. Global typography: apply Inter to everything */
+body,
+button,
+input,
+label,
+p,
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont,
+               'Segoe UI', Roboto, Oxygen, Ubuntu,
+               Cantarell, 'Helvetica Neue', sans-serif;
   margin: 0;
   padding: 0;
-  background: #f9f9f9;
-  color: #333;
 }
-header { text-align: center; padding: 1rem; }
-.tabs { display: flex; justify-content: center; margin-bottom: 1rem; }
-.tabs button { margin: 0 0.5rem; padding: 0.5rem 1rem; cursor: pointer; }
-.tabs button.active { background: #0055cc; color: white; }
-main { max-width: 600px; margin: 0 auto; padding: 1rem; }
-form { display: flex; flex-direction: column; }
-label { margin-bottom: 0.5rem; }
-input { padding: 0.5rem; margin-bottom: 0.5rem; font-size: 1rem; }
-button { padding: 0.5rem; font-size: 1rem; background: #0055cc; color: white; border: none; cursor: pointer; }
-.error { color: #cc0000; font-size: 0.9rem; }
-.hidden { display: none; }
-.ad-placeholder { text-align: center; padding: 1rem; background: #e1e1e1; margin-top: 2rem; }
-/* Mobile adjustments */
+
+/* 3. Base body styles */
+body {
+  background-color: var(--color-alt-bg);
+  color: var(--color-secondary);
+  line-height: 1.5;
+}
+
+/* Header */
+.site-header,
+header {
+  text-align: center;
+  padding: 1rem;
+}
+
+/* 4. Tabs */
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.tabs button {
+  margin: 0 0.5rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  background: none;
+  color: var(--color-secondary);
+  font-weight: 600;
+}
+.tabs button.active {
+  background-color: var(--color-accent);
+  color: var(--color-secondary);
+}
+
+/* 5. Main layout */
+main {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1rem;
+}
 @media (max-width: 600px) {
-  .tabs { flex-direction: column; }
   main { padding: 0.5rem; }
-  input, button { font-size: 1.2rem; }
+}
+
+/* 6. Forms */
+form {
+  display: flex;
+  flex-direction: column;
+}
+label {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+input {
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid var(--color-muted);
+  border-radius: 4px;
+}
+@media (max-width: 600px) {
+  input { font-size: 1.2rem; }
+}
+
+/* 7. Buttons */
+button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  background-color: var(--color-primary);
+  color: var(--color-bg);
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+button:hover {
+  background-color: var(--color-secondary);
+}
+@media (max-width: 600px) {
+  button { font-size: 1.2rem; }
+}
+
+/* 8. Code display styling */
+#codeDisplay {
+  font-weight: 800;             /* Extra-bold */
+  font-size: 2rem;              /* Larger size */
+  color: var(--color-accent);   /* Amber to stand out */
+  display: inline-block;
+  margin-left: 0.25rem;
+}
+#phoneticDisplay {
+  font-weight: 600;             /* Semi-bold */
+  color: var(--color-accent);
+}
+
+/* 9. Error & message */
+.error {
+  color: #D14343;
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
 }
 .message {
   display: block;
   margin-top: 0.5rem;
   font-size: 0.9rem;
-  color: #0055cc;
-}
-.hidden { display: none; }
-.site-header {
-  text-align: center;
-  padding: 20px; 
+  color: var(--color-accent);
 }
 
+/* 10. Ad placeholder */
+.ad-placeholder {
+  text-align: center;
+  padding: 1rem;
+  background: var(--color-muted);
+  margin-top: 2rem;
+  border-radius: 4px;
+}
+
+/* 11. Utility classes */
+.hidden {
+  display: none;
+}
+
+/* 12. Logo resizing */
 .logo {
   height: auto;
   max-width: 100%;
@@ -47,3 +156,4 @@ button { padding: 0.5rem; font-size: 1rem; background: #0055cc; color: white; bo
     max-height: 50px;
   }
 }
+
