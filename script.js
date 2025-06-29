@@ -1,36 +1,40 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const sendTab        = document.getElementById('sendTab');
-  const retrieveTab    = document.getElementById('retrieveTab');
-  const sendSection    = document.getElementById('sendSection');
-  const retrieveSection= document.getElementById('retrieveSection');
-  const sendForm       = document.getElementById('sendForm');
-  const emailInput     = document.getElementById('emailInput');
-  const emailError     = document.getElementById('emailError');
-  const codeResult     = document.getElementById('codeResult');
-  const codeDisplay    = document.getElementById('codeDisplay');
-  const phoneticDisplay= document.getElementById('phoneticDisplay');
-  const timerDisplay   = document.getElementById('timerDisplay');
-  const restartBtn     = document.getElementById('restartBtn');
-  const retrieveForm   = document.getElementById('retrieveForm');
-  const codeInput      = document.getElementById('codeInput');
-  const codeError      = document.getElementById('codeError');
-  const emailResult    = document.getElementById('emailResult');
-  const emailDisplay   = document.getElementById('emailDisplay');
-  const copyBtn        = document.getElementById('copyBtn');
-  const copyMessage    = document.getElementById('copyMessage');
-  const mailtoBtn      = document.getElementById('mailtoBtn');
+  const sendTab         = document.getElementById('sendTab');
+  const retrieveTab     = document.getElementById('retrieveTab');
+  const sendSection     = document.getElementById('sendSection');
+  const retrieveSection = document.getElementById('retrieveSection');
+  const sendForm        = document.getElementById('sendForm');
+  const emailInput      = document.getElementById('emailInput');
+  const emailError      = document.getElementById('emailError');
+  const codeResult      = document.getElementById('codeResult');
+  const codeDisplay     = document.getElementById('codeDisplay');
+  const phoneticDisplay = document.getElementById('phoneticDisplay');
+  const timerDisplay    = document.getElementById('timerDisplay');
+  const restartBtn      = document.getElementById('restartBtn');
+  const retrieveForm    = document.getElementById('retrieveForm');
+  const codeInput       = document.getElementById('codeInput');
+  const codeError       = document.getElementById('codeError');
+  const emailResult     = document.getElementById('emailResult');
+  const emailDisplay    = document.getElementById('emailDisplay');
+  const copyBtn         = document.getElementById('copyBtn');
+  const copyMessage     = document.getElementById('copyMessage');
+  const mailtoBtn       = document.getElementById('mailtoBtn');
 
-  // Sanity check
-  if (!sendTab || !retrieveTab || !sendForm || !retrieveForm) {
-    console.error('Missing one of the main elements—check your index.html IDs.');
+  // Ensure copyMessage is hidden on load
+  if (copyMessage) {
+    copyMessage.classList.add('hidden');
+  }
+
+  // Simple sanity check
+  if (!sendForm || !retrieveForm) {
+    console.error('Missing essential form elements—check your HTML IDs.');
     return;
   }
 
   let timerInterval;
 
-  // Updated phonetic map to include zero
   const phoneticMap = {
-    '0':'Zero','1':'One','2':'Two','3':'Three',
+    '0': 'Zero','1':'One','2':'Two','3':'Three',
     '4':'Four','5':'Five','6':'Six',
     '7':'Seven','8':'Eight','9':'Nine'
   };
@@ -38,27 +42,34 @@ document.addEventListener('DOMContentLoaded', () => {
   // Tab switching
   function switchTab(tab) {
     if (tab === 'send') {
-      sendTab.classList.add('active'); retrieveTab.classList.remove('active');
-      sendSection.classList.remove('hidden'); retrieveSection.classList.add('hidden');
+      sendTab.classList.add('active');
+      retrieveTab.classList.remove('active');
+      sendSection.classList.remove('hidden');
+      retrieveSection.classList.add('hidden');
     } else {
-      retrieveTab.classList.add('active'); sendTab.classList.remove('active');
-      retrieveSection.classList.remove('hidden'); sendSection.classList.add('hidden');
+      retrieveTab.classList.add('active');
+      sendTab.classList.remove('active');
+      retrieveSection.classList.remove('hidden');
+      sendSection.classList.add('hidden');
     }
   }
   sendTab.addEventListener('click', () => switchTab('send'));
   retrieveTab.addEventListener('click', () => switchTab('retrieve'));
 
   // SEND flow
-  sendForm.addEventListener('submit', async e => {
-    e.preventDefault(); emailError.textContent = '';
+  sendForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    emailError.textContent = '';
+
     if (!emailInput.checkValidity()) {
       emailError.textContent = 'Please enter a valid email address.';
       return;
     }
+
     try {
       const resp = await fetch('/api/generate', {
         method: 'POST',
-        headers: {'Content-Type':'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: emailInput.value.trim().toLowerCase() })
       });
       const data = await resp.json();
@@ -66,11 +77,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       codeDisplay.textContent = data.code;
       phoneticDisplay.textContent = data.code
-        .split('').map(n => phoneticMap[n]||n).join(', ');
-      sendForm.classList.add('hidden'); codeResult.classList.remove('hidden');
+        .split('').map(n => phoneticMap[n] || n).join(', ');
+      sendForm.classList.add('hidden');
+      codeResult.classList.remove('hidden');
+
       if (window.plausible) plausible('Generate Code');
 
-      // Timer
+      // Start 5-minute timer
       let timeLeft = 300;
       timerDisplay.textContent = '05:00';
       clearInterval(timerInterval);
@@ -90,34 +103,45 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Restart
+  // Restart SEND flow
   restartBtn.addEventListener('click', () => {
     clearInterval(timerInterval);
-    sendForm.classList.remove('hidden'); codeResult.classList.add('hidden');
+    sendForm.classList.remove('hidden');
+    codeResult.classList.add('hidden');
     emailInput.value = '';
   });
 
   // RETRIEVE flow
-  retrieveForm.addEventListener('submit', async e => {
-    e.preventDefault(); codeError.textContent = '';
+  retrieveForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    codeError.textContent = '';
+    if (copyMessage) {
+      copyMessage.classList.add('hidden'); // hide any leftover message
+    }
+
     try {
       const resp = await fetch(`/api/retrieve?code=${encodeURIComponent(codeInput.value.trim())}`);
       const data = await resp.json();
       if (!resp.ok) throw new Error(data.error || 'Retrieve failed');
 
       emailDisplay.textContent = data.email;
-      retrieveForm.classList.add('hidden'); emailResult.classList.remove('hidden');
+      retrieveForm.classList.add('hidden');
+      emailResult.classList.remove('hidden');
+
       if (window.plausible) plausible('Retrieve Email');
 
-      // Copy
+      // Copy handler
       copyBtn.onclick = () => {
         navigator.clipboard.writeText(data.email).then(() => {
-          copyMessage.classList.remove('hidden');
-          if (window.plausible) plausible('Copy Email');
-          setTimeout(() => copyMessage.classList.add('hidden'), 2000);
+          if (copyMessage) {
+            copyMessage.classList.remove('hidden');
+            if (window.plausible) plausible('Copy Email');
+            setTimeout(() => copyMessage.classList.add('hidden'), 2000);
+          }
         });
       };
-      // Mailto
+
+      // Mailto handler
       mailtoBtn.onclick = () => {
         window.location.href = `mailto:${data.email}`;
         if (window.plausible) plausible('Open Mailto');
