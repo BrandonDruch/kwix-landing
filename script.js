@@ -99,7 +99,13 @@ document.addEventListener('DOMContentLoaded', () => {
     retrieveForm.classList.add('hidden');
     emailResult.classList.remove('hidden');
     if (window.plausible) plausible('Retrieve Email');
-    copyBtn.onclick=()=>navigator.clipboard.writeText(data.email);
-    mailtoBtn.onclick=()=>window.location.href=`mailto:${data.email}`;
+    copyBtn.onclick = () => {
+      navigator.clipboard.writeText(data.email);
+      if (window.plausible) plausible('Copy Email');
+      };
+    mailtoBtn.onclick = () => {
+      window.location.href = `mailto:${data.email}`;
+      if (window.plausible) plausible('Open Mailto');
+      };
   });
 });
