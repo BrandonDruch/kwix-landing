@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const emailResult = document.getElementById('emailResult');
   const emailDisplay = document.getElementById('emailDisplay');
   const copyBtn = document.getElementById('copyBtn');
+  const copyMessage = document.getElementById('copyMessage');
   const mailtoBtn = document.getElementById('mailtoBtn');
 
   let timerInterval;
@@ -27,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   function switchTab(tab) {
-    if(tab==='send') {
+    if (tab === 'send') {
       sendTab.classList.add('active');
       retrieveTab.classList.remove('active');
       sendSection.classList.remove('hidden');
@@ -39,77 +40,100 @@ document.addEventListener('DOMContentLoaded', () => {
       sendSection.classList.add('hidden');
     }
   }
-  sendTab.addEventListener('click', ()=>switchTab('send'));
-  retrieveTab.addEventListener('click', ()=>switchTab('retrieve'));
 
-  sendForm.addEventListener('submit', async e => {
+  sendTab.addEventListener('click', () => switchTab('send'));
+  retrieveTab.addEventListener('click', () => switchTab('retrieve'));
+
+  // SEND FLOW
+  sendForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    emailError.textContent='';
-    if(!emailInput.checkValidity()){
-      emailError.textContent='Please enter a valid email address.';
+    emailError.textContent = '';
+    // Validate email
+    if (!emailInput.checkValidity()) {
+      emailError.textContent = 'Please enter a valid email address.';
       return;
     }
-    const resp=await fetch('/api/generate',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({email:emailInput.value.trim().toLowerCase()})
-    });
-    const data=await resp.json();
-    if(!resp.ok){
-      emailError.textContent=data.error||'Failed to generate code.';
-      return;
+
+    try {
+      const resp = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: emailInput.value.trim().toLowerCase() })
+      });
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.error || 'Failed to generate code.');
+
+      // Show code + phonetic
+      codeDisplay.textContent = data.code;
+      phoneticDisplay.textContent = data.code
+        .split('').map(n => phoneticMap[n] || n).join(', ');
+      sendForm.classList.add('hidden');
+      codeResult.classList.remove('hidden');
+
+      // Plausible event
+      if (window.plausible) plausible('Generate Code');
+
+      // Start 5-min timer
+      let timeLeft = 300;
+      timerDisplay.textContent = '05:00';
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        const mm = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+        const ss = String(timeLeft % 60).padStart(2, '0');
+        timerDisplay.textContent = `${mm}:${ss}`;
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          alert('Code expired. Please restart.');
+        }
+      }, 1000);
+
+    } catch (err) {
+      emailError.textContent = err.message;
     }
-    codeDisplay.textContent=data.code;
-    phoneticDisplay.textContent=data.code.split('').map(n=>phoneticMap[n]||n).join(', ');
-    sendForm.classList.add('hidden');
-    codeResult.classList.remove('hidden'); 
-    if (window.plausible) plausible('Generate Code');
-    let timeLeft=300;
-    timerDisplay.textContent='05:00';
-    clearInterval(timerInterval);
-    timerInterval=setInterval(()=>{
-      timeLeft--;
-      const mm=String(Math.floor(timeLeft/60)).padStart(2,'0');
-      const ss=String(timeLeft%60).padStart(2,'0');
-      timerDisplay.textContent=`${mm}:${ss}`;
-      if(timeLeft<=0){
-        clearInterval(timerInterval);
-        alert('Code expired. Please restart.');
-      }
-    },1000);
   });
 
-  restartBtn.addEventListener('click',()=>{
+  restartBtn.addEventListener('click', () => {
     clearInterval(timerInterval);
     sendForm.classList.remove('hidden');
     codeResult.classList.add('hidden');
-    emailInput.value='';
+    emailInput.value = '';
   });
 
-  retrieveForm.addEventListener('submit', async e => {
+  // RETRIEVE FLOW
+  retrieveForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    codeError.textContent='';
-    const resp=await fetch(`/api/retrieve?code=${encodeURIComponent(codeInput.value.trim())}`);
-    const data=await resp.json();
-    if(!resp.ok){
-      codeError.textContent=data.error||'Failed to retrieve email.';
-      return;
+    codeError.textContent = '';
+
+    try {
+      const resp = await fetch(`/api/retrieve?code=${encodeURIComponent(codeInput.value.trim())}`);
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.error || 'Failed to retrieve email.');
+
+      emailDisplay.textContent = data.email;
+      retrieveForm.classList.add('hidden');
+      emailResult.classList.remove('hidden');
+
+      // Plausible event
+      if (window.plausible) plausible('Retrieve Email');
+      
+      // Copy button logic
+      copyBtn.onclick = () => {
+        navigator.clipboard.writeText(data.email).then(() => {
+          copyMessage.classList.remove('hidden');
+          if (window.plausible) plausible('Copy Email');
+          setTimeout(() => copyMessage.classList.add('hidden'), 2000);
+        });
+      };
+
+      // Mailto button logic
+      mailtoBtn.onclick = () => {
+        window.location.href = `mailto:${data.email}`;
+        if (window.plausible) plausible('Open Mailto');
+      };
+
+    } catch (err) {
+      codeError.textContent = err.message;
     }
-    emailDisplay.textContent=data.email;
-    retrieveForm.classList.add('hidden');
-    emailResult.classList.remove('hidden');
-    if (window.plausible) plausible('Retrieve Email');
-    copyBtn.onclick = () => {
-  navigator.clipboard.writeText(data.email).then(() => {
-      const msg = document.getElementById('copyMessage');
-      msg.classList.remove('hidden');
-      if (window.plausible) plausible('Copy Email');
-      setTimeout(() => msg.classList.add('hidden'), 2000);
-  });
-      };
-    mailtoBtn.onclick = () => {
-      window.location.href = `mailto:${data.email}`;
-      if (window.plausible) plausible('Open Mailto');
-      };
   });
 });
