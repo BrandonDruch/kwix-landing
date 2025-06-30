@@ -135,22 +135,21 @@ button:hover {
   border-radius: 4px;
 }
 
-/* 11. Button row for Copy + Send Email */
+/* 11. Flex row for Copy + Send Email */
 .button-row {
   display: flex;
   align-items: center;
+  width: 100%;
 }
-
 /* Reserve space for Copy + “Copied!” */
 .copy-container {
   display: inline-flex;
   align-items: center;
   min-width: 10ch;
 }
-
-/* Space between the two buttons */
+/* Pin Send Email to right */
 .button-row > #mailtoBtn {
-  margin-left: 1.5rem;
+  margin-left: auto;
 }
 
 /* 12. Logo resizing */
@@ -191,4 +190,10 @@ button:hover {
 #copyMessage:not(.hidden) {
   display: inline-block;
   opacity: 1;
+}
+
+/* 16. Responsive adjustments */
+@media (max-width: 600px) {
+  .tabs { flex-direction: column; }
+  input, button { font-size: 1.2rem; }
 }
