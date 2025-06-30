@@ -119,14 +119,23 @@ button:hover {
   color: var(--color-accent);
 }
 
-/* 9. Error styling */
+/* 9. Highlight retrieved email */
+#emailDisplay {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-top: 0.5rem;
+}
+
+/* 10. Error styling */
 .error {
   color: #D14343;
   margin-top: 0.25rem;
   font-size: 0.9rem;
 }
 
-/* 10. Ad placeholder */
+/* 11. Ad placeholder */
 .ad-placeholder {
   text-align: center;
   padding: 1rem;
@@ -135,7 +144,7 @@ button:hover {
   border-radius: 4px;
 }
 
-/* 11. Flex row for Copy + Send Email */
+/* 12. Flex row for Copy + Send Email */
 .button-row {
   display: flex;
   align-items: center;
@@ -152,7 +161,7 @@ button:hover {
   margin-left: auto;
 }
 
-/* 12. Logo resizing */
+/* 13. Logo resizing */
 .logo {
   height: auto;
   max-width: 100%;
@@ -163,12 +172,12 @@ button:hover {
   .logo { max-height: 50px; }
 }
 
-/* 13. Utility class */
+/* 14. Utility class */
 .hidden {
   display: none !important;
 }
 
-/* 14. Hide result & retrieve sections until JS toggles them */
+/* 15. Hide result & retrieve sections until JS toggles them */
 #codeResult,
 #retrieveSection {
   display: none !important;
@@ -178,7 +187,7 @@ button:hover {
   display: block !important;
 }
 
-/* 15. “Copied!” message – hidden by default, shown only when JS removes .hidden */
+/* 16. “Copied!” message – hidden by default, shown only when JS removes .hidden */
 #copyMessage {
   display: none;
   opacity: 0;
@@ -192,7 +201,7 @@ button:hover {
   opacity: 1;
 }
 
-/* 16. Responsive adjustments */
+/* 17. Responsive adjustments */
 @media (max-width: 600px) {
   .tabs { flex-direction: column; }
   input, button { font-size: 1.2rem; }
