@@ -8,7 +8,9 @@
   --color-alt-bg:    #F9F9F9;   /* Page background */
 }
 
-/* 2. Global typography: apply Inter to everything */
+/* 2. Global typography: apply Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+
 body,
 button,
 input,
@@ -117,17 +119,11 @@ button:hover {
   color: var(--color-accent);
 }
 
-/* 9. Error & message */
+/* 9. Error styling */
 .error {
   color: #D14343;
   margin-top: 0.25rem;
   font-size: 0.9rem;
-}
-.message {
-  display: inline-block;      /* sit inline */
-  margin-left: 0.5rem;        /* space from the button */
-  font-size: 0.9rem;
-  color: var(--color-accent);
 }
 
 /* 10. Ad placeholder */
@@ -139,9 +135,22 @@ button:hover {
   border-radius: 4px;
 }
 
-/* 11. Utility classes */
-.hidden {
-  display: none;
+/* 11. Button row for Copy + Send Email */
+.button-row {
+  display: flex;
+  align-items: center;
+}
+
+/* Reserve space for Copy + “Copied!” */
+.copy-container {
+  display: inline-flex;
+  align-items: center;
+  min-width: 10ch;
+}
+
+/* Space between the two buttons */
+.button-row > #mailtoBtn {
+  margin-left: 1.5rem;
 }
 
 /* 12. Logo resizing */
@@ -152,46 +161,34 @@ button:hover {
   padding: 10px 0;
 }
 @media (max-width: 480px) {
-  .logo {
-    max-height: 50px;
-  }
-}
-/* Flex‐row for the two buttons */
-.button-row {
-  display: flex;
-  align-items: center;
+  .logo { max-height: 50px; }
 }
 
-/* Reserve space for Copy + “Copied!” */
-.copy-container {
-  display: inline-flex;
-  align-items: center;
-  /* adjust this to fit your longest Copy+message width */
-  min-width: 10ch;
+/* 13. Utility class */
+.hidden {
+  display: none !important;
 }
 
-/* “Copied!” stays inline, we already set .message to inline-block */
-.message {
-  display: inline-block;
-  margin-left: 0.5rem;
-  color: var(--color-accent);
-}
-
-/* Space between Copy-container and Send Email */
-.button-row > #mailtoBtn {
-  margin-left: 1.5rem;
-}
-/* ——————————————————————————————— */
-/* Force code-result & retrieve sections to stay hidden until un-hidden by JS */
-/* ——————————————————————————————— */
-
+/* 14. Hide result & retrieve sections until JS toggles them */
 #codeResult,
 #retrieveSection {
   display: none !important;
 }
-
 #codeResult:not(.hidden),
 #retrieveSection:not(.hidden) {
   display: block !important;
 }
 
+/* 15. “Copied!” message – hidden by default, shown only when JS removes .hidden */
+#copyMessage {
+  display: none;
+  opacity: 0;
+  font-size: 0.9rem;
+  color: var(--color-accent);
+  margin-left: 0.5rem;
+  transition: opacity 0.2s ease;
+}
+#copyMessage:not(.hidden) {
+  display: inline-block;
+  opacity: 1;
+}
