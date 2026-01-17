@@ -101,6 +101,7 @@ button {
 }
 button:hover {
   background-color: var(--color-secondary);
+  color: var(--color-bg) !important;
 }
 @media (max-width: 600px) {
   button { font-size: 1.2rem; }
